@@ -1,293 +1,308 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 
 <head>
-	<meta charset=utf-8 />
-	<title>Lab 07 — US Power Plants</title>
-	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-	<link rel='icon' href='https://newmapsplus.github.io/favicon.ico' type='image/x-icon' />
+  <meta charset="utf-8">
 
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.4/leaflet.css">
-	<link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,900i" rel="stylesheet">
+  <title>Casos COVID-19 em Portugal Continental - 4693; 4566; 4567 </title>
 
-	<style>
-		/*
-			UKy Colors:
-            #c7c9c8 light gray
-            #63666a dark gray
-            #15397f dark blue
-            #009bda light blue
-            #0033a0 official blue
-        */
-		body {
-			margin: 0;
-			padding: 0;
-			background: #e3e3e6;
-			font-family: 'Lato', sans-serif;
-			font-weight: 300;
-			color: #3d3d3d;
-			font-size: 100%;
-			/* 16px is default browser size */
 
-		}
 
-		header,
-		section,
-		footer {
-			width: 80%;
-			margin: 10px auto;
-		}
 
-		h1 {
-			font-weight: 900;
-			font-size: 2.8em;
-			font-style: italic;
-			/* The em unit. 3x the current size */
-			letter-spacing: .02em;
-			margin: 5px 0;
-			/* text-transform: uppercase; */
-		}
 
-		h2 {
-			font-weight: 300;
-			color: #63666a;
-			font-size: 2.2em;
-			letter-spacing: .06em;
-			font-style: italic;
-			margin: 5px 0;
-		}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 
-		h3 {
-			font-weight: 300i;
-			font-size: 1.5em;
-			margin-bottom: 5px;
-		}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap-utilities.min.css" rel="stylesheet"
+    crossorigin="anonymous" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+    crossorigin="anonymous">
 
-		p {
-			font-size: 1.3em;
-			line-height: 1.8em;
-			margin-bottom: 5px;
-		}
+  <meta name="theme-color" content="#712cf9">
 
-		a {
-			color: #004A8B;
-			font-weight: 400;
-			text-decoration: none;
-		}
 
-		a:hover {
-			text-decoration: underline;
-		}
+  <style>
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
 
-		ul {
-			padding: 0px 20px 4px 20px;
-			font-size: 1.1em;
-			line-height: 1.2em;
-			color: #63666a;
-		}
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
 
-		li {
-			margin: 10px 0
-		}
+    .b-example-divider {
+      height: 3rem;
+      background-color: rgba(0, 0, 0, .1);
+      border: solid rgba(0, 0, 0, .15);
+      border-width: 1px 0;
+      box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+    }
 
-		hr {
-			margin: 20px 0;
-			border: 0;
-			height: 1px;
-			background: #63666a;
+    .b-example-vr {
+      flex-shrink: 0;
+      width: 1.5rem;
+      height: 100vh;
+    }
 
-		}
+    .bi {
+      vertical-align: -.125em;
+      fill: currentColor;
+    }
 
-		.linkbox {
-			margin: 3px 0 20px 0;
-			display: block;
-			font-size: 0.9em;
-			font-weight: 300;
-			line-height: 1.3em;
-		}
+    .nav-scroller {
+      position: relative;
+      z-index: 2;
+      height: 2.75rem;
+      overflow-y: hidden;
+    }
 
-		#map {
-			width: 100%;
-			height: 450px;
-			margin: 20px auto;
+    .nav-scroller .nav {
+      display: flex;
+      flex-wrap: nowrap;
+      padding-bottom: 1rem;
+      margin-top: -1px;
+      overflow-x: auto;
+      text-align: center;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+  </style>
 
-		}
 
-		.max-image-width {
-			width: 100%;
-		}
-
-		/* Use float property to make two-column layout */
-		.first-column {
-			float: left;
-			width: 49%;
-			padding-right: 2%;
-		}
-
-		.column {
-			float: left;
-			width: 49%;
-		}
-
-		/* Clear floats after the columns */
-		.row::after {
-			content: "";
-			display: block;
-			clear: both;
-		}
-
-		.leaflet-popup-content p {
-			margin: 1px 0 -8px;
-			font-size: 1.1em;
-		}
-
-		.leaflet-popup-content h3 {
-			font-family: 'Slabo 27px', serif;
-			font-size: 1.3em;
-			margin-bottom: 1px;
-		}
-
-		/* When browser is 900px wide or less */
-		@media screen and (max-width: 900px) {
-
-			.first-column,
-			.second-column {
-				width: 100%;
-			}
-		}
-	</style>
+  <!-- Custom styles for this template -->
 </head>
 
 <body>
 
-	<header>
-		<h1>Número de Casos COVID-19</h1>
-	</header>
-	
-	<div id="map"></div>
-	
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.4/leaflet.js"></script>
-	<script src="data/casos.geoJson"></script>
-	<script>
-		// map options
-		var options = {
-			center: [39.7, -8],
-			zoom: 6
-		}
+  <header style="margin-bottom: 100px;">
+  
+      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Casos COVID-19 em Portugal Continental - Cases of COVID-19 in Mainland Portugal</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <form class="d-flex" role="search">
+            <img style="width: 50px; height:50px;" src="./Images/covid-icon-red-no-background.png"/>
+          </form>
+        </div>
+      </nav>
+  </header>
 
-		// create a Leaflet map in our division container with id of 'map'
-		var map = L.map('map', options);
-
-		// Leaflet providers base map URL
-		var basemap_source =
-			'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/dark_all/{z}/{x}/{y}.png'
-
-		// Leaflet providers attributes
-		var basemap_options = {
-			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-			subdomains: 'abcd',
-			maxZoom: 19
-		};
-
-		// request some basemap tiles and add to the map
-		var tiles = L.tileLayer(basemap_source, basemap_options).addTo(map);
-
-		casos.features.sort(function (a, b) {
-			return b.properties.Casos_23_1;
-		});
+  <main>
 
 
 
-		// var popup = '<h3>' + hotspots[i].name + '</h3>'
-		// Load power plants
-		Casos_23_1= L.geoJson(casos, {
-			filter: function (feature) {
-				if (feature.properties.Casos_23_1) { // This test to see if the key exits
-					return feature;
-				}
-			},
-			pointToLayer: function (feature, latlng) {
-				return L.circleMarker(latlng, {
-					color: 'darkblue',
-					weight: 1,
-					fillColor: 'blue',
-					fillOpacity: 0.3,
-					radius: getRadius(feature.properties.Casos_23_1)
-				});
-			},
-			onEachFeature: function (feature, layer) {
-				var popup =
-					'<p><b>Concelho' + layer.feature.properties.Concelho + '</b></p>' +
-					'<p>Nº Casos: ' + layer.feature.properties.Casos_23_1 + ' MW</p>' 
 
-				layer.on('mouseover', function () {
-					layer.bindPopup(popup).openPopup();
-					layer.setStyle({
-						fillColor: 'yellow',
-						fillOpacity: 1
-					});
-				});
+    <!-- Marketing messaging and featurettes
+  ================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
 
-				layer.on('mouseout', function () {
-					layer.setStyle({
-						fillColor: 'blue',
-						fillOpacity: 0.3
-					});
-					layer.bindPopup(popup).closePopup();
-				})
-
-			}
-		}).addTo(map);
+    <div class="container marketing">
 
 
+      <!-- START THE FEATURETTES -->
 
-		Casos_24_1= L.geoJson(casos, {
-			filter: function (feature) {
-				if (feature.properties.Casos_24_1) { // This test to see if the key exits
-					return feature;
-				}
-			},
-			pointToLayer: function (feature, latlng) {
-				return L.circleMarker(latlng, {
-					color: 'red',
-					weight: 1,
-					fillColor: 'red',
-					fillOpacity: 0.3,
-					radius: getRadius(feature.properties.Casos_24_1)
-				});
-			},
-			onEachFeature: function (feature, layer) {
-				var popup =
-					'<p><b>Concelho' + layer.feature.properties.Concelho + '</b></p>' +
-					'<p>Nº Casos: ' + layer.feature.properties.Casos_24_1 + ' MW</p>' 
-
-				layer.on('mouseover', function () {
-					layer.bindPopup(popup).openPopup();
-					layer.setStyle({
-						fillColor: 'yellow',
-						fillOpacity: 1
-					});
-				});
-
-				layer.on('mouseout', function () {
-					layer.setStyle({
-						fillColor: 'blue',
-						fillOpacity: 0.3
-					});
-					layer.bindPopup(popup).closePopup();
-				})
-
-			}
-		}).addTo(map);
+      <hr class="featurette-divider">
 
 
+      <div class="row featurette">
+        <div class="col-md-7">
+          <h2 class="featurette-heading fw-normal lh-1">Casos COVID-19 por 10 000 habitantes - 15 de Janeiro. </h2>
+          <p class="lead">COVID-19 cases per 10 000 habitants - January 15.</p>
+          <br>
 
-		function getRadius(area) {
-			var radius = Math.sqrt(area / Math.PI);
-			return radius * 3;
-		};
-	</script>
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="Grafico-tab" data-bs-toggle="tab" data-bs-target="#Grafico-tab-pane"
+                type="button" role="tab" aria-controls="Grafico-tab-pane" aria-selected="true">Gráfico</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="Analise-tab" data-bs-toggle="tab" data-bs-target="#Analise-tab-pane"
+                type="button" role="tab" aria-controls="Analise-tab-pane" aria-selected="false">Análise</button>
+            </li>
+
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="Grafico-tab-pane" role="tabpanel" aria-labelledby="Grafico-tab"
+              tabindex="0"> <img src="./Images/grafico1.jpeg" alt="Gráfico 1" width="500" height="300" ;></div>
+            <div class="tab-pane fade" id="Analise-tab-pane" role="tabpanel" aria-labelledby="Analise-tab" tabindex="0">
+              <br>
+              <p style="font-size: medium;"> <b>As maiores concentrações de casos por 10.000 habitantes encontram-se
+                  principalmente na parte noroeste de Portugal e na cidade de Lisboa. Isto ocorre principalmente nas
+                  zonas com muita população onde o vírus poderia espalhar-se mais rapidamente, mas também nas zonas
+                  rurais ou mais isoladas com baixa população, onde apenas alguns infetados aumentaram os valores
+                  dentro das estatísticas (por exemplo, Moura no Alentejo).</b> </p>
+              <p style="font-size: medium;"> The highest concentrations of cases per 10000 inhabitants can be mainly
+                found in north-western part of Portugal and in the city of Lisbon. This mainly occurs either in the
+                areas with lots of population where the virus could spread faster, but also in the rural or more
+                isolated areas with low population, where only a few infected people raised the values within the
+                statistics (e.g. Moura in Alentejo). </p>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-md-5">
+          <iframe src="./mapa2.html" style="width: 500px; height: 600px;"
+            title="Casos COVID-19 por 10 000 habitantes - 15 de Janeiro"></iframe>
+        </div>
+      </div>
+
+
+      <hr class="featurette-divider">
+
+      <div class="row featurette">
+        <div class="col-md-7 order-md-2">
+          <h2 class="featurette-heading fw-normal lh-1"> Casos COVID-19 por 10 000 habitantes - 23 de Janeiro. </h2>
+          <p class="lead">COVID-19 cases per 10 000 habitants - January 23.</p>
+          <br>
+
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="Grafico-tab" data-bs-toggle="tab" data-bs-target="#Grafico-tab-pane2"
+                type="button" role="tab" aria-controls="Grafico-tab-pane2" aria-selected="true">Gráfico</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="Analise-tab" data-bs-toggle="tab" data-bs-target="#Analise-tab-pane2"
+                type="button" role="tab" aria-controls="Analise-tab-pane2" aria-selected="false">Análise</button>
+            </li>
+
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="Grafico-tab-pane2" role="tabpanel" aria-labelledby="Grafico-tab"
+              tabindex="0"> <img src="./Images/grafico2.jpeg" alt="Gráfico 2" width="500" height="300" ;></div>
+            <div class="tab-pane fade" id="Analise-tab-pane2" role="tabpanel" aria-labelledby="Analise-tab"
+              tabindex="0">
+              <br>
+              <p style="font-size: medium;"> <b>No dia 23 de janeiro, os valores são mais baixos em todo o país. As
+                  maiores concentrações de COVID-19 situam-se sobretudo no Noroeste, na Área Metropolitana do Porto e
+                  arredores (por exemplo, concelho de Ovar, no distrito de Aveiro).</b> </p>
+              <p style="font-size: medium;"> On 23rd of January, the values are lower all around the country. The
+                highest concentrations of COVID-19 are mainly in the north-west, in the Metropolitan Area of Porto and
+                around it (e.g. concelho of Ovar, in Aveiro district). </p>
+            </div>
+
+          </div>
+
+        </div>
+        <div class="col-md-5 order-md-1">
+          <iframe src="./mapa1.html" style="width: 500px; height: 600px;"
+            title="Casos COVID-19 por 10 000 habitantes - 23 de Janeiro"></iframe>
+        </div>
+      </div>
+
+      <hr class="featurette-divider">
+
+      <div class="row featurette">
+        <div class="col-md-7">
+          <h2 class="featurette-heading fw-normal lh-1">Número de Casos COVID-19 - 15 de Janeiro. </h2>
+          <p class="lead">Number of COVID-19 Cases - January 15.</p>
+          <br>
+
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="Grafico-tab" data-bs-toggle="tab" data-bs-target="#Grafico-tab-pane3"
+                type="button" role="tab" aria-controls="Grafico-tab-pane3" aria-selected="true">Gráfico</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="Analise-tab" data-bs-toggle="tab" data-bs-target="#Analise-tab-pane3"
+                type="button" role="tab" aria-controls="Analise-tab-pane3" aria-selected="false">Análise</button>
+            </li>
+
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="Grafico-tab-pane3" role="tabpanel" aria-labelledby="Grafico-tab"
+              tabindex="0"> <img src="./Images/grafico3.jpeg" alt="Gráfico 3" width="500" height="300" ;></div>
+            <div class="tab-pane fade" id="Analise-tab-pane3" role="tabpanel" aria-labelledby="Analise-tab"
+              tabindex="0">
+              <br>
+              <p style="font-size: medium;"> <b>Nesta data há um elevado número de casos em todo o país. Os valores mais
+                  elevados concentram-se principalmente nas áreas metropolitanas (por exemplo, Vila Nova de Gaia,
+                  incluída na Área Metropolitana do Porto é o terceiro concelho do país com um número de casos). Um
+                  elevado número de casos pode ser observado também em Coimbra e Braga.</b> </p>
+              <p style="font-size: medium;"> In this date there are high number of cases all around the country. The
+                highest values are mainly concentrated in the metropolitan areas (E.g. Vila Nova de Gaia, included in
+                the Porto Metropolitan Area is the third concelho in the country by number of cases). A high number of
+                cases can be observed also in Coimbra and Braga. </p>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-md-5">
+          <iframe src="./mapa4.html" style="width: 500px; height: 600px;"
+            title="Número de Casos COVID-19 - 15 de Janeiro"></iframe>
+        </div>
+      </div>
+
+
+      <hr class="featurette-divider">
+
+      <div class="row featurette">
+        <div class="col-md-7 order-md-2">
+          <h2 class="featurette-heading fw-normal lh-1"> Número de Casos COVID-19 - 23 de Janeiro. </h2>
+          <p class="lead">Number of COVID-19 Cases - January 23.</p>
+          <br>
+
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="Grafico-tab" data-bs-toggle="tab" data-bs-target="#Grafico-tab-pane4"
+                type="button" role="tab" aria-controls="Grafico-tab-pane4" aria-selected="true">Gráfico</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="Analise-tab" data-bs-toggle="tab" data-bs-target="#Analise-tab-pane4"
+                type="button" role="tab" aria-controls="Analise-tab-pane4" aria-selected="false">Análise</button>
+            </li>
+
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="Grafico-tab-pane4" role="tabpanel" aria-labelledby="Grafico-tab"
+              tabindex="0"> <img src="./Images/grafico4.jpeg" alt="Gráfico 4" width="500" height="300" ;></div>
+            <div class="tab-pane fade" id="Analise-tab-pane4" role="tabpanel" aria-labelledby="Analise-tab"
+              tabindex="0">
+              <br>
+              <p style="font-size: medium;"> <b>Após 8 dias, o número de casos diminuiu em todo o país, concentrando-se
+                  o maior número de casos novamente nas áreas metropolitanas e principais cidades.</b> </p>
+              <p style="font-size: medium;"> After 8 days, the number of cases decreased all around the country, the
+                highest number of cases still being concentrated in metropolitan areas and major cities.</p>
+            </div>
+
+          </div>
+
+        </div>
+        <div class="col-md-5 order-md-1">
+          <iframe src="./mapa3.html" style="width: 500px; height: 600px;"
+            title="Número de Casos COVID-19 - 23 de Janeiro"></iframe>
+        </div>
+      </div>
+
+
+      <hr class="featurette-divider">
+
+      <!-- /END THE FEATURETTES -->
+
+    </div><!-- /.container -->
+
+
+    <!-- FOOTER -->
+    <footer class="container">
+      <p class="float-end"><a href="#">Back to top</a></p>
+      <p> UC: WebSIG | AL: 2021-2022 | Docente: Nelson Mileu | Discentes: Corina Todea (4693), Inês Chainho (4566); Rita
+        Soares (4567).
+    </footer>
+  </main>
+
+
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+    crossorigin="anonymous"></script>
+
 
 </body>
 
