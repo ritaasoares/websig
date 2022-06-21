@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset=utf-8 />
+	<title>Lab 07 — US Power Plants</title>
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+	<link rel='icon' href='https://newmapsplus.github.io/favicon.ico' type='image/x-icon' />
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.4/leaflet.css">
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,900i" rel="stylesheet">
+
+	<style>
+		/*
+			UKy Colors:
+            #c7c9c8 light gray
+            #63666a dark gray
+            #15397f dark blue
+            #009bda light blue
+            #0033a0 official blue
+        */
+		body {
+			margin: 0;
+			padding: 0;
+			background: #e3e3e6;
+			font-family: 'Lato', sans-serif;
+			font-weight: 300;
+			color: #3d3d3d;
+			font-size: 100%;
+			/* 16px is default browser size */
+
+		}
+
+		header,
+		section,
+		footer {
+			width: 80%;
+			margin: 10px auto;
+		}
+
+		h1 {
+			font-weight: 900;
+			font-size: 2.8em;
+			font-style: italic;
+			/* The em unit. 3x the current size */
+			letter-spacing: .02em;
+			margin: 5px 0;
+			/* text-transform: uppercase; */
+		}
+
+		h2 {
+			font-weight: 300;
+			color: #63666a;
+			font-size: 2.2em;
+			letter-spacing: .06em;
+			font-style: italic;
+			margin: 5px 0;
+		}
+
+		h3 {
+			font-weight: 300i;
+			font-size: 1.5em;
+			margin-bottom: 5px;
+		}
+
+		p {
+			font-size: 1.3em;
+			line-height: 1.8em;
+			margin-bottom: 5px;
+		}
+
+		a {
+			color: #004A8B;
+			font-weight: 400;
+			text-decoration: none;
+		}
+
+		a:hover {
+			text-decoration: underline;
+		}
+
+		ul {
+			padding: 0px 20px 4px 20px;
+			font-size: 1.1em;
+			line-height: 1.2em;
+			color: #63666a;
+		}
+
+		li {
+			margin: 10px 0
+		}
+
+		hr {
+			margin: 20px 0;
+			border: 0;
+			height: 1px;
+			background: #63666a;
+
+		}
+
+		.linkbox {
+			margin: 3px 0 20px 0;
+			display: block;
+			font-size: 0.9em;
+			font-weight: 300;
+			line-height: 1.3em;
+		}
+
+		#map {
+			width: 100%;
+			height: 450px;
+			margin: 20px auto;
+
+		}
+
+		.max-image-width {
+			width: 100%;
+		}
+
+		/* Use float property to make two-column layout */
+		.first-column {
+			float: left;
+			width: 49%;
+			padding-right: 2%;
+		}
+
+		.column {
+			float: left;
+			width: 49%;
+		}
+
+		/* Clear floats after the columns */
+		.row::after {
+			content: "";
+			display: block;
+			clear: both;
+		}
+
+		.leaflet-popup-content p {
+			margin: 1px 0 -8px;
+			font-size: 1.1em;
+		}
+
+		.leaflet-popup-content h3 {
+			font-family: 'Slabo 27px', serif;
+			font-size: 1.3em;
+			margin-bottom: 1px;
+		}
+
+		/* When browser is 900px wide or less */
+		@media screen and (max-width: 900px) {
+
+			.first-column,
+			.second-column {
+				width: 100%;
+			}
+		}
+	</style>
+</head>
+
+<body>
+
+	<header>
+		<h1>Número de Casos COVID-19</h1>
+	</header>
+	
+	<div id="map"></div>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.4/leaflet.js"></script>
+	<script src="data/casos.geoJson"></script>
+	<script>
+		// map options
+		var options = {
+			center: [39.7, -8],
+			zoom: 6
+		}
+
+		// create a Leaflet map in our division container with id of 'map'
+		var map = L.map('map', options);
+
+		// Leaflet providers base map URL
+		var basemap_source =
+			'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/dark_all/{z}/{x}/{y}.png'
+
+		// Leaflet providers attributes
+		var basemap_options = {
+			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+			subdomains: 'abcd',
+			maxZoom: 19
+		};
+
+		// request some basemap tiles and add to the map
+		var tiles = L.tileLayer(basemap_source, basemap_options).addTo(map);
+
+		casos.features.sort(function (a, b) {
+			return b.properties.Casos_23_1;
+		});
+
+
+
+		// var popup = '<h3>' + hotspots[i].name + '</h3>'
+		// Load power plants
+		Casos_23_1= L.geoJson(casos, {
+			filter: function (feature) {
+				if (feature.properties.Casos_23_1) { // This test to see if the key exits
+					return feature;
+				}
+			},
+			pointToLayer: function (feature, latlng) {
+				return L.circleMarker(latlng, {
+					color: 'darkblue',
+					weight: 1,
+					fillColor: 'blue',
+					fillOpacity: 0.3,
+					radius: getRadius(feature.properties.Casos_23_1)
+				});
+			},
+			onEachFeature: function (feature, layer) {
+				var popup =
+					'<p><b>Concelho' + layer.feature.properties.Concelho + '</b></p>' +
+					'<p>Nº Casos: ' + layer.feature.properties.Casos_23_1 + ' MW</p>' 
+
+				layer.on('mouseover', function () {
+					layer.bindPopup(popup).openPopup();
+					layer.setStyle({
+						fillColor: 'yellow',
+						fillOpacity: 1
+					});
+				});
+
+				layer.on('mouseout', function () {
+					layer.setStyle({
+						fillColor: 'blue',
+						fillOpacity: 0.3
+					});
+					layer.bindPopup(popup).closePopup();
+				})
+
+			}
+		}).addTo(map);
+
+
+
+		Casos_24_1= L.geoJson(casos, {
+			filter: function (feature) {
+				if (feature.properties.Casos_24_1) { // This test to see if the key exits
+					return feature;
+				}
+			},
+			pointToLayer: function (feature, latlng) {
+				return L.circleMarker(latlng, {
+					color: 'red',
+					weight: 1,
+					fillColor: 'red',
+					fillOpacity: 0.3,
+					radius: getRadius(feature.properties.Casos_24_1)
+				});
+			},
+			onEachFeature: function (feature, layer) {
+				var popup =
+					'<p><b>Concelho' + layer.feature.properties.Concelho + '</b></p>' +
+					'<p>Nº Casos: ' + layer.feature.properties.Casos_24_1 + ' MW</p>' 
+
+				layer.on('mouseover', function () {
+					layer.bindPopup(popup).openPopup();
+					layer.setStyle({
+						fillColor: 'yellow',
+						fillOpacity: 1
+					});
+				});
+
+				layer.on('mouseout', function () {
+					layer.setStyle({
+						fillColor: 'blue',
+						fillOpacity: 0.3
+					});
+					layer.bindPopup(popup).closePopup();
+				})
+
+			}
+		}).addTo(map);
+
+
+
+		function getRadius(area) {
+			var radius = Math.sqrt(area / Math.PI);
+			return radius * 3;
+		};
+	</script>
+
+</body>
+
+</html>
